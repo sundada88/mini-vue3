@@ -3,7 +3,10 @@ export const App = {
   // .vue
   // <template></template>
   render() {
-    return h("div", "hi, " + this.msg);
+    return h("div", { id: "root", class: ["red", "head"] }, [
+      h("p", { class: "red" }, "hi"),
+      h("p", { class: "blue" }, "mini-vue"),
+    ]);
   },
   setup() {
     return {

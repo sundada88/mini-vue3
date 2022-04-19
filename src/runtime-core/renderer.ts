@@ -1,3 +1,4 @@
+import { isObject } from "../shared/index"
 import { createComponentInstance, setupComponent } from "./component"
 
 export function render(vnode, rootContainer) {
@@ -10,16 +11,45 @@ function patch(vnode: any, rootContainer: any) {
 
   // 如果vnode是element类型 => 处理 element
   // 如何区分component还是element类型
-  processElement()
+  // 通过 vnode.type 来判断是component还是element
 
-  // 根据类型去处理组件或者元素
-  processComponent(vnode, rootContainer)
+  if (typeof vnode.type === 'string') {
+    processElement(vnode, rootContainer)
+  } else if (isObject(vnode.type)) {
+    // 根据类型去处理组件或者元素
+    processComponent(vnode, rootContainer)
+  }
 
 }
 
 
-function processElement() {
-  throw new Error("Function not implemented.")
+function processElement(vnode, container) {
+  // 分为 init 和 update
+  mountElement(vnode, container)
+}
+
+function mountElement(vnode: any, container: any) {
+  // 创建真实的element，然后挂载到container上面
+  const { children } = vnode
+  const el = document.createElement(vnode.type)
+  if (typeof children === 'string') {
+    el.innerText = vnode.children
+  } else if (Array.isArray(children)) {
+    // vnode
+    mountChildren(vnode, el)
+  }
+  for (const key in vnode.props) {
+    const val = vnode.props[key]
+    el.setAttribute(key, val)
+  }
+  // el.setAttribute('id', 'nicai')
+  container.appendChild(el)
+}
+function mountChildren(vnode, container) {
+
+  vnode.children.forEach(v => {
+    patch(v, container)
+  })
 }
 
 function processComponent(vnode: any, rootContainer: any) {
@@ -42,5 +72,6 @@ function setupRenderEffect(instance, container) {
   // vnode => element => mountElement
   patch(subTree, container)
 }
+
 
 
