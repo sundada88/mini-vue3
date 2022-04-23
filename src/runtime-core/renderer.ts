@@ -57,22 +57,22 @@ function processComponent(vnode: any, rootContainer: any) {
   mountComponent(vnode, rootContainer)
 }
 
-function mountComponent(vnode: any, container: any) {
+function mountComponent(initialVNode: any, container: any) {
   // 创建组件实例
-  const instance = createComponentInstance(vnode)
+  const instance = createComponentInstance(initialVNode)
   setupComponent(instance)
   // 拆箱过程
-  setupRenderEffect(instance, vnode, container)
+  setupRenderEffect(instance, initialVNode, container)
 }
 
-function setupRenderEffect(instance, vnode, container) {
+function setupRenderEffect(instance, initialVNode, container) {
   const subTree = instance.render.call(instance.proxy)
   // subTree 是 vnode
 
   // vnode => patch
   // vnode => element => mountElement
   patch(subTree, container)
-  vnode.el = subTree.el
+  initialVNode.el = subTree.el
 }
 
 
