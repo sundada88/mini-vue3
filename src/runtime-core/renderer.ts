@@ -31,15 +31,16 @@ function processElement(vnode, container) {
 function mountElement(vnode: any, container: any) {
   // 创建真实的element，然后挂载到container上面
   const { children } = vnode
-  const el = document.createElement(vnode.type)
+  const el = vnode.el = document.createElement(vnode.type)
   if (typeof children === 'string') {
     el.innerText = vnode.children
   } else if (Array.isArray(children)) {
     // vnode
     mountChildren(vnode, el)
   }
-  for (const key in vnode.props) {
-    const val = vnode.props[key]
+  const { props } = vnode
+  for (const key in props) {
+    const val = props[key]
     el.setAttribute(key, val)
   }
   // el.setAttribute('id', 'nicai')
@@ -61,16 +62,17 @@ function mountComponent(vnode: any, container: any) {
   const instance = createComponentInstance(vnode)
   setupComponent(instance)
   // 拆箱过程
-  setupRenderEffect(instance, container)
+  setupRenderEffect(instance, vnode, container)
 }
 
-function setupRenderEffect(instance, container) {
-  const subTree = instance.render()
+function setupRenderEffect(instance, vnode, container) {
+  const subTree = instance.render.call(instance.proxy)
   // subTree 是 vnode
 
   // vnode => patch
   // vnode => element => mountElement
   patch(subTree, container)
+  vnode.el = subTree.el
 }
 
 

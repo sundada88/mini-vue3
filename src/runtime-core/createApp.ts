@@ -8,7 +8,6 @@ export function createApp(rootComponent) {
       // component => vnode
       // 后续的逻辑操作都是基于 vnode
       const vnode = createVNode(rootComponent)
-
       // 上面生成vnode之后，下面就要将vnode => 
       render(vnode, rootContainer)
     }
