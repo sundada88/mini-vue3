@@ -1,40 +1,38 @@
-import { isObject } from "../shared/index"
-import { createComponentInstance, setupComponent } from "./component"
+import { isObject } from '../shared/index'
+import { ShapeFlags } from '../shared/ShapeFlags'
+import { createComponentInstance, setupComponent } from './component'
 
-export function render(vnode, rootContainer) {
+export function render (vnode, rootContainer) {
   // patch => 为了方便递归的处理
   patch(vnode, rootContainer)
-
 }
 
-function patch(vnode: any, rootContainer: any) {
-
+function patch (vnode: any, rootContainer: any) {
   // 如果vnode是element类型 => 处理 element
   // 如何区分component还是element类型
   // 通过 vnode.type 来判断是component还是element
 
-  if (typeof vnode.type === 'string') {
+  const { shapeFlag } = vnode
+  if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, rootContainer)
-  } else if (isObject(vnode.type)) {
+  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     // 根据类型去处理组件或者元素
     processComponent(vnode, rootContainer)
   }
-
 }
 
-
-function processElement(vnode, container) {
+function processElement (vnode, container) {
   // 分为 init 和 update
   mountElement(vnode, container)
 }
 
-function mountElement(vnode: any, container: any) {
+function mountElement (vnode: any, container: any) {
   // 创建真实的element，然后挂载到container上面
-  const { children } = vnode
-  const el = vnode.el = document.createElement(vnode.type)
-  if (typeof children === 'string') {
+  const { children, shapeFlag } = vnode
+  const el = (vnode.el = document.createElement(vnode.type))
+  if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.innerText = vnode.children
-  } else if (Array.isArray(children)) {
+  } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
     // vnode
     mountChildren(vnode, el)
   }
@@ -46,18 +44,17 @@ function mountElement(vnode: any, container: any) {
   // el.setAttribute('id', 'nicai')
   container.appendChild(el)
 }
-function mountChildren(vnode, container) {
-
+function mountChildren (vnode, container) {
   vnode.children.forEach(v => {
     patch(v, container)
   })
 }
 
-function processComponent(vnode: any, rootContainer: any) {
+function processComponent (vnode: any, rootContainer: any) {
   mountComponent(vnode, rootContainer)
 }
 
-function mountComponent(initialVNode: any, container: any) {
+function mountComponent (initialVNode: any, container: any) {
   // 创建组件实例
   const instance = createComponentInstance(initialVNode)
   setupComponent(instance)
@@ -65,7 +62,7 @@ function mountComponent(initialVNode: any, container: any) {
   setupRenderEffect(instance, initialVNode, container)
 }
 
-function setupRenderEffect(instance, initialVNode, container) {
+function setupRenderEffect (instance, initialVNode, container) {
   const subTree = instance.render.call(instance.proxy)
   // subTree 是 vnode
 
@@ -74,6 +71,3 @@ function setupRenderEffect(instance, initialVNode, container) {
   patch(subTree, container)
   initialVNode.el = subTree.el
 }
-
-
-
