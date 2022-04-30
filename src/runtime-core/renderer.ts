@@ -28,7 +28,7 @@ function processElement (vnode, container) {
 
 function mountElement (vnode: any, container: any) {
   // 创建真实的element，然后挂载到container上面
-  const { children, shapeFlag } = vnode
+  const { shapeFlag } = vnode
   const el = (vnode.el = document.createElement(vnode.type))
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.innerText = vnode.children

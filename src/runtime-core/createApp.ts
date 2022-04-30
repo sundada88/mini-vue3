@@ -4,7 +4,6 @@ import { render } from './renderer'
 export function createApp (rootComponent) {
   return {
     mount (rootContainer) {
-      console.log('rootComponent ---> ', rootComponent)
       // 转换为 vnode
       // component => vnode
       // 后续的逻辑操作都是基于 vnode

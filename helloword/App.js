@@ -1,4 +1,5 @@
 import { h } from '../lib/guide-mini-vue.esm.js'
+import { Foo } from './Foo.js'
 window.self = null
 export const App = {
   // .vue
@@ -9,20 +10,33 @@ export const App = {
     //   h("p", { class: "red" }, "hi"),
     //   h("p", { class: "blue" }, "mini-vue"),
     // ]);
-    return h(
-      'div',
-      {
-        id: 'root',
-        class: 'red',
-        onClick () {
-          console.log(123)
+    // add event
+    // return h(
+    //   'div',
+    //   {
+    //     id: 'root',
+    //     class: 'red'
+    //     onClick () {
+    //       console.log(123)
+    //     },
+    //     onMouseup () {
+    //       console.log(11111111111)
+    //     }
+    //   },
+    //   [h('div', {}, 'hi' + this.msg), h(Foo, { count: 1 })]
+    // )
+    return h('div', {}, [
+      h('div', {}, 'App'),
+      h(Foo, {
+        // on + event name
+        onAdd (a, b, c) {
+          console.log('onAdd----->', a, b, c)
         },
-        onMouseup () {
-          console.log(11111111111)
+        onAddTo (a, b, c) {
+          console.log('add-to----->', c, b, a)
         }
-      },
-      'hi' + this.msg
-    )
+      })
+    ])
   },
   setup () {
     return {
