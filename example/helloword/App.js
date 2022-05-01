@@ -1,5 +1,5 @@
-import { h } from '../lib/guide-mini-vue.esm.js'
-import { Foo } from './Foo.js'
+import { h } from '../../lib/guide-mini-vue.esm.js'
+import { Foo } from '../componentSlots/Foo.js'
 window.self = null
 export const App = {
   // .vue
