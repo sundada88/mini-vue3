@@ -5,6 +5,13 @@ import { PublicInstanceProxyHandlers } from './componentPublicInstance'
 import { initSlots } from './componentsSlots'
 
 export function createComponentInstance (vnode) {
+  //  vnode => {
+  //   type,
+  //   props,
+  //   children,
+  //   shapeFlag: getShapeFlag(type),
+  //   el: null
+  // }
   const component = {
     vnode,
     type: vnode.type,

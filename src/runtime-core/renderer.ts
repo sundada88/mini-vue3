@@ -1,5 +1,6 @@
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
+import { Fragment } from './vnode'
 
 export function render (vnode, rootContainer) {
   // patch => 为了方便递归的处理
@@ -11,17 +12,34 @@ function patch (vnode: any, rootContainer: any) {
   // 如何区分component还是element类型
   // 通过 vnode.type 来判断是component还是element
 
-  const { shapeFlag } = vnode
-  if (shapeFlag & ShapeFlags.ELEMENT) {
-    processElement(vnode, rootContainer)
-  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
-    // 根据类型去处理组件或者元素
-    processComponent(vnode, rootContainer)
+  const { shapeFlag, type } = vnode
+  // Fragment => 只渲染children
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, rootContainer)
+      break
+
+    default:
+      // Element类型
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(vnode, rootContainer)
+      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        // 根据类型去处理组件或者元素
+        // Component 类型
+        processComponent(vnode, rootContainer)
+      }
+      break
   }
+}
+
+function processFragment (vnode: any, rootContainer: any) {
+  // 渲染children
+  mountChildren(vnode, rootContainer)
 }
 
 function processElement (vnode, container) {
   // 分为 init 和 update
+  // init
   mountElement(vnode, container)
 }
 
@@ -29,10 +47,11 @@ function mountElement (vnode: any, container: any) {
   // 创建真实的element，然后挂载到container上面
   const { shapeFlag } = vnode
   const el = (vnode.el = document.createElement(vnode.type))
+  // 存在单个子元素
   if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
     el.innerText = vnode.children
   } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-    // vnode
+    // 存在多个子元素
     mountChildren(vnode, el)
   }
   const { props } = vnode
@@ -69,6 +88,7 @@ function mountComponent (initialVNode: any, container: any) {
 }
 
 function setupRenderEffect (instance, initialVNode, container) {
+  // 因为把props属性，$slots属性，$el都挂载到了instance.proxy上面
   const subTree = instance.render.call(instance.proxy)
   // subTree 是 vnode
 
