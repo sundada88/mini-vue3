@@ -1,22 +1,25 @@
-import { createAppApi } from '../runtime-core/createApp'
 import { createRenderer } from '../runtime-core/index'
 
 function createElement (type) {
   return document.createElement(type)
 }
 
-function patchProp (el, key, val) {
+function patchProp (el, key, prevValue, nextValue) {
   const isOn = (key: string) => /^on[A-Z]/.test(key)
   if (isOn(key)) {
     const event = key.slice(2).toLowerCase()
-    el.addEventListener(event, val)
+    el.addEventListener(event, nextValue)
   } else {
-    el.setAttribute(key, val)
+    if (nextValue === null || nextValue === undefined) {
+      el.removeAttribute(key)
+    } else {
+      el.setAttribute(key, nextValue)
+    }
   }
 }
 
 function insert (el, container) {
-  container.appendChild(el)
+  container.append(el)
 }
 
 const renderer: any = createRenderer({
