@@ -135,22 +135,69 @@ import { h, ref } from '../../lib/guide-mini-vue.esm.js'
 //   h('div', { key: 'G' }, 'g')
 // ]
 
+// 2. 移动节点
+// const prevChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'C' }, 'c'),
+//   h('div', { key: 'D' }, 'd'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'F' }, 'f')
+// ]
+
+// const nextChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'C' }, 'c'),
+//   h('div', { key: 'D' }, 'd'),
+//   h('div', { key: 'F' }, 'f')
+// ]
+
+//3. 创建节点
+// const prevChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'C' }, 'c'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'F' }, 'f'),
+//   h('div', { key: 'G' }, 'g')
+// ]
+
+// const nextChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'C' }, 'c'),
+//   h('div', { key: 'D' }, 'd'),
+//   h('div', { key: 'F' }, 'f'),
+//   h('div', { key: 'G' }, 'g')
+// ]
+
+// 综合栗子
+// a, b, (c, d, e, z), f, g
+// a, b, (d, c, y, e), f, g
+
 const prevChildren = [
   h('div', { key: 'A' }, 'a'),
   h('div', { key: 'B' }, 'b'),
   h('div', { key: 'C' }, 'c'),
   h('div', { key: 'D' }, 'd'),
   h('div', { key: 'E' }, 'e'),
-  h('div', { key: 'F' }, 'f')
+  h('div', { key: 'Z' }, 'z'),
+  h('div', { key: 'F' }, 'f'),
+  h('div', { key: 'G' }, 'g')
 ]
 
 const nextChildren = [
   h('div', { key: 'A' }, 'a'),
   h('div', { key: 'B' }, 'b'),
-  h('div', { key: 'E' }, 'e'),
-  h('div', { key: 'C' }, 'c'),
   h('div', { key: 'D' }, 'd'),
-  h('div', { key: 'F' }, 'f')
+  h('div', { key: 'C' }, 'c'),
+  h('div', { key: 'Y' }, 'y'),
+  h('div', { key: 'E' }, 'e'),
+  h('div', { key: 'F' }, 'f'),
+  h('div', { key: 'G' }, 'g')
 ]
 
 export default {

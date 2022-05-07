@@ -258,7 +258,10 @@ export function createRenderer (options) {
         const nextChild = c2[nextIndex]
         const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null
 
-        if (moved) {
+        // 当 newIndexToOldIndexMap 中的为 0 表明在老的里面没有找到
+        if (newIndexToOldIndexMap[i] === 0) {
+          patch(null, nextChild, container, parentComponent, anchor)
+        } else if (moved) {
           if (j < 0 || i !== increasingNewIndexSequence[j]) {
             hostInsert(nextChild.el, container, anchor)
           } else {
