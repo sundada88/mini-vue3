@@ -116,23 +116,41 @@ import { h, ref } from '../../lib/guide-mini-vue.esm.js'
 // a, b, (e, c), f, g
 // 中间部分。老的比新的多，那么多出来的可以直接干掉(优化删除逻辑)
 
+// const prevChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'C', id: 'prev-c' }, 'c'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'D' }, 'd'),
+//   h('div', { key: 'F' }, 'f'),
+//   h('div', { key: 'G' }, 'g')
+// ]
+
+// const nextChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'C', id: 'next-c' }, 'c'),
+//   h('div', { key: 'F' }, 'f'),
+//   h('div', { key: 'G' }, 'g')
+// ]
+
 const prevChildren = [
   h('div', { key: 'A' }, 'a'),
   h('div', { key: 'B' }, 'b'),
-  h('div', { key: 'C', id: 'prev-c' }, 'c'),
-  h('div', { key: 'E' }, 'e'),
+  h('div', { key: 'C' }, 'c'),
   h('div', { key: 'D' }, 'd'),
-  h('div', { key: 'F' }, 'f'),
-  h('div', { key: 'G' }, 'g')
+  h('div', { key: 'E' }, 'e'),
+  h('div', { key: 'F' }, 'f')
 ]
 
 const nextChildren = [
   h('div', { key: 'A' }, 'a'),
   h('div', { key: 'B' }, 'b'),
   h('div', { key: 'E' }, 'e'),
-  h('div', { key: 'C', id: 'next-c' }, 'c'),
-  h('div', { key: 'F' }, 'f'),
-  h('div', { key: 'G' }, 'g')
+  h('div', { key: 'C' }, 'c'),
+  h('div', { key: 'D' }, 'd'),
+  h('div', { key: 'F' }, 'f')
 ]
 
 export default {
