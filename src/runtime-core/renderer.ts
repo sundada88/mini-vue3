@@ -2,6 +2,7 @@ import { effect } from '../reactivity/effect'
 import { EMPTY_OBJ } from '../shared'
 import { ShapeFlags } from '../shared/ShapeFlags'
 import { createComponentInstance, setupComponent } from './component'
+import { shouldUpdateComponent } from './componentUpdateUtils'
 import { createAppApi } from './createApp'
 import { Fragment, Text } from './vnode'
 export function createRenderer (options) {
@@ -226,7 +227,7 @@ export function createRenderer (options) {
           newIndex = keyToNewIndexMap.get(prevChild.key)
         } else {
           // 如果没有key，则找出新的中的和老的相等的那个 index
-          for (let j = s2; j < e2; j++) {
+          for (let j = s2; j <= e2; j++) {
             if (isSameVNodeType(prevChild, c2[j])) {
               newIndex = j
               break
@@ -339,19 +340,49 @@ export function createRenderer (options) {
     parentComponent,
     anchor
   ) {
-    mountComponent(n2, rootContainer, parentComponent, anchor)
+    if (!n1) {
+      mountComponent(n2, rootContainer, parentComponent, anchor)
+    } else {
+      debugger
+      updateComponent(n1, n2)
+    }
   }
 
-  function mountComponent (n2: any, container: any, parentComponent, anchor) {
+  function updateComponent (n1, n2) {
+    // 调用更新组建的 render 函数，生成新的 VNode, 然后再进行 patch
+    // 其实就是调用  setupRenderEffect
+    // 我们可以将 setupRenderEffect 放在 component 实例的属性上
+
+    // 如果组件需要更新在执行更新过程
+
+    const instance = (n2.component = n1.component)
+    if (shouldUpdateComponent(n1, n2)) {
+      instance.next = n2
+      instance.update()
+    } else {
+      n2.el = n1.el
+      instance.vnode = n2
+    }
+  }
+
+  function mountComponent (
+    initialVNode: any,
+    container: any,
+    parentComponent,
+    anchor
+  ) {
     // 创建组件实例
-    const instance = createComponentInstance(n2, parentComponent)
+    const instance = (initialVNode.component = createComponentInstance(
+      initialVNode,
+      parentComponent
+    ))
     setupComponent(instance)
     // 拆箱过程
-    setupRenderEffect(instance, n2, container, anchor)
+    setupRenderEffect(instance, initialVNode, container, anchor)
   }
 
   function setupRenderEffect (instance, initialVNode, container, anchor) {
-    effect(() => {
+    instance.update = effect(() => {
       //需要区分是不是第一次 init 还是后续更新 update
       if (!instance.isMounted) {
         // 因为把props属性，$slots属性，$el都挂载到了instance.proxy上面
@@ -366,6 +397,12 @@ export function createRenderer (options) {
         initialVNode.el = subTree.el
         instance.isMounted = true
       } else {
+        const { next, vnode } = instance
+        if (next) {
+          next.el = vnode.el
+          // 更新组建的 props 属性
+          updateComponentPreRender(instance, next)
+        }
         const prevVNode = instance.subTree
         const subTree = (instance.subTree = instance.render.call(
           instance.proxy
@@ -378,6 +415,15 @@ export function createRenderer (options) {
   return {
     createApp: createAppApi(render)
   }
+}
+
+function updateComponentPreRender (instance, nextVNode) {
+  // 更新组建实例的 vnode
+  instance.vnode = nextVNode
+  instance.next = null
+
+  // 更新组建的 props
+  instance.props = nextVNode.props
 }
 
 function getSequence (arr: number[]): number[] {

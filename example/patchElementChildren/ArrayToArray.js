@@ -178,28 +178,42 @@ import { h, ref } from '../../lib/guide-mini-vue.esm.js'
 // a, b, (c, d, e, z), f, g
 // a, b, (d, c, y, e), f, g
 
+// const prevChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'C' }, 'c'),
+//   h('div', { key: 'D' }, 'd'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'Z' }, 'z'),
+//   h('div', { key: 'F' }, 'f'),
+//   h('div', { key: 'G' }, 'g')
+// ]
+
+// const nextChildren = [
+//   h('div', { key: 'A' }, 'a'),
+//   h('div', { key: 'B' }, 'b'),
+//   h('div', { key: 'D' }, 'd'),
+//   h('div', { key: 'C' }, 'c'),
+//   h('div', { key: 'Y' }, 'y'),
+//   h('div', { key: 'E' }, 'e'),
+//   h('div', { key: 'F' }, 'f'),
+//   h('div', { key: 'G' }, 'g')
+// ]
+
+// fix: c 节点应该是移动的，不应该是创建的
 const prevChildren = [
   h('div', { key: 'A' }, 'a'),
+  h('div', {}, 'c'),
   h('div', { key: 'B' }, 'b'),
-  h('div', { key: 'C' }, 'c'),
-  h('div', { key: 'D' }, 'd'),
-  h('div', { key: 'E' }, 'e'),
-  h('div', { key: 'Z' }, 'z'),
-  h('div', { key: 'F' }, 'f'),
-  h('div', { key: 'G' }, 'g')
+  h('div', { key: 'D' }, 'd')
 ]
 
 const nextChildren = [
   h('div', { key: 'A' }, 'a'),
   h('div', { key: 'B' }, 'b'),
-  h('div', { key: 'D' }, 'd'),
-  h('div', { key: 'C' }, 'c'),
-  h('div', { key: 'Y' }, 'y'),
-  h('div', { key: 'E' }, 'e'),
-  h('div', { key: 'F' }, 'f'),
-  h('div', { key: 'G' }, 'g')
+  h('div', {}, 'c'),
+  h('div', { key: 'D' }, 'd')
 ]
-
 export default {
   name: 'ArrayToText',
 
