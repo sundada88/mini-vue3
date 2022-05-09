@@ -244,6 +244,7 @@ export function createRenderer (options) {
             moved = true
           }
           newIndexToOldIndexMap[newIndex - s2] = i + 1
+
           // 如有在新的找到，直接 patch
           patch(prevChild, c2[newIndex], container, parentComponent, null)
           patched++
@@ -389,8 +390,8 @@ export function createRenderer (options) {
         const subTree = (instance.subTree = instance.render.call(
           instance.proxy
         ))
-        // subTree 是 vnode
 
+        // subTree 是 vnode
         // vnode => patch
         // vnode => element => mountElement
         patch(null, subTree, container, instance, anchor)
