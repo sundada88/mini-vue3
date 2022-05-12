@@ -20,11 +20,31 @@ function parseChildren (context) {
       node = parseElement(context)
     }
   }
+  if (!node) {
+    // handle text
+    node = parseText(context)
+  }
   nodes.push(node)
   return nodes
 }
 
-function parseElement (context) {
+function parseText (context: any) {
+  // 1. 获取content
+  const content = parseTextData(context, context.source.length)
+  return {
+    type: NodeTypes.TEXT,
+    content
+  }
+}
+
+function parseTextData (context: any, length) {
+  const content = context.source.slice(0, length)
+  // 2. 推进
+  advanceBy(context, content.length)
+  return content
+}
+
+function parseElement (context: any) {
   // 1. 解析 tag
   const element = parseTag(context, TagType.START)
 
@@ -44,7 +64,6 @@ function parseTag (context: any, type: TagType) {
   advanceBy(context, match[0].length)
   // 删除 标签后边的 >
   advanceBy(context, 1)
-  console.log(context.source)
 
   if (type === TagType.END) return
   return {
@@ -67,14 +86,15 @@ function parseInterpolation (context) {
   advanceBy(context, openDelimiter.length)
 
   const rawContentLength = closeIndex - openDelimiter.length
-  const rawContent = context.source.slice(0, rawContentLength)
+  // const rawContent = context.source.slice(0, rawContentLength)
+  const rawContent = parseTextData(context, rawContentLength)
   const content = rawContent.trim()
 
   // context.source = context.source.slice(
   //   rawContentLength + closeDelimiter.length
   // )
 
-  advanceBy(context, rawContentLength + closeDelimiter.length)
+  advanceBy(context, closeDelimiter.length)
 
   return {
     type: NodeTypes.INTERPOLATION,
