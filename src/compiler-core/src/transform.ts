@@ -1,9 +1,16 @@
-export function transform (root, options) {
+export function transform (root, options = {}) {
   const context = createTransformContext(root, options)
 
   // 1. 遍历 - 深度优先遍历
   traverseNode(root, context)
   // 2. 修改 text content
+
+  // 3. 为 root 添加属性 codegenRoot ,方便后续 codegen 做操作
+  createRootCodegen(root)
+}
+
+function createRootCodegen (root) {
+  root.codegenNode = root.children[0]
 }
 
 function createTransformContext (root: any, options: any) {
