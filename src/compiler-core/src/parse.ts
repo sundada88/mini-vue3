@@ -173,6 +173,7 @@ function createParseContext (content: string): any {
 }
 function createRoot (children) {
   return {
-    children
+    children,
+    type: NodeTypes.ROOT
   }
 }
