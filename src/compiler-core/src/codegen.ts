@@ -1,5 +1,9 @@
 import { NodeTypes } from './ast'
-import { helperMapName, TO_DISPLAY_STRING } from './runtimeHelpers'
+import {
+  CREATE_ELEMENT_VNODE,
+  helperMapName,
+  TO_DISPLAY_STRING
+} from './runtimeHelpers'
 
 export function generate (ast) {
   const context = createCodegenContext()
@@ -65,6 +69,9 @@ function genNode (node: any, context: any) {
       genExpression(node, context)
       break
 
+    case NodeTypes.ELEMENT:
+      genElement(node, context)
+      break
     default:
       break
   }
@@ -87,4 +94,15 @@ function genInterpolation (node: any, context: any) {
 function genExpression (node: any, context: any) {
   const { push } = context
   push(`${node.content}`)
+}
+
+function genElement (node: any, context: any) {
+  const { push, helper } = context
+  const { tag, children } = node
+  push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), null, `)
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
+    genNode(child, context)
+  }
+  push(')')
 }

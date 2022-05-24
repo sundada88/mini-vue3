@@ -1,6 +1,7 @@
 import { NodeTypes } from './ast'
 import { TO_DISPLAY_STRING } from './runtimeHelpers'
 
+// root 其实是一个 ast 语法树
 export function transform (root, options = {}) {
   const context = createTransformContext(root, options)
 
@@ -34,11 +35,13 @@ function traverseNode (node: any, context) {
   // if (node.type === NodeTypes.TEXT) {
   //   node.content += ' mini-vue'
   // }
+
   const nodeTransform = context.nodeTransforms
 
+  // 将传入的 nodeTransform 插件对节点进行处理
   for (let i = 0; i < nodeTransform.length; i++) {
     const transform = nodeTransform[i]
-    transform(node)
+    transform(node, context)
   }
 
   switch (node.type) {
