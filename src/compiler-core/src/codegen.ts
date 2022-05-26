@@ -115,13 +115,32 @@ function genExpression (node: any, context: any) {
 
 function genElement (node: any, context: any) {
   const { push, helper } = context
-  const { tag, children } = node
-  const child = children[0]
-  push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), null, `)
+  const { tag, children, props } = node
+  push(`${helper(CREATE_ELEMENT_VNODE)}( `)
+  // push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), ${props}, `)
   // for (let i = 0; i < children.length; i++) {
   //   const child = children[i]
   //   genNode(child, context)
   // }
-  genNode(child, context)
+  genNodeList(genNullable([tag, props, children]), context)
+
+  // genNode(children, context)
   push(')')
+}
+function genNullable (args: any[]) {
+  return args.map(arg => arg || 'null')
+}
+function genNodeList (nodes: any[], context: any) {
+  const { push } = context
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]
+    if (isString(node)) {
+      push(node)
+    } else {
+      genNode(node, context)
+    }
+    if (i < nodes.length - 1) {
+      push(', ')
+    }
+  }
 }

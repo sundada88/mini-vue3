@@ -15,7 +15,12 @@ export function transform (root, options = {}) {
 }
 
 function createRootCodegen (root) {
-  root.codegenNode = root.children[0]
+  const child = root.children[0]
+  if (child.type === NodeTypes.ELEMENT) {
+    root.codegenNode = child.codegenNode
+  } else {
+    root.codegenNode = root.children[0]
+  }
 }
 
 function createTransformContext (root: any, options: any) {
@@ -36,12 +41,16 @@ function traverseNode (node: any, context) {
   //   node.content += ' mini-vue'
   // }
 
-  const nodeTransform = context.nodeTransforms
+  const nodeTransforms = context.nodeTransforms
 
+  const existsFns: any = []
   // 将传入的 nodeTransform 插件对节点进行处理
-  for (let i = 0; i < nodeTransform.length; i++) {
-    const transform = nodeTransform[i]
-    transform(node, context)
+  for (let i = 0; i < nodeTransforms.length; i++) {
+    const transform = nodeTransforms[i]
+    const onExist = transform(node, context)
+    if (onExist) {
+      existsFns.push(onExist)
+    }
   }
 
   switch (node.type) {
@@ -58,6 +67,10 @@ function traverseNode (node: any, context) {
 
     default:
       break
+  }
+  let j = existsFns.length
+  while (j--) {
+    existsFns[j]()
   }
 }
 function transformChildren (node: any, context: any) {
