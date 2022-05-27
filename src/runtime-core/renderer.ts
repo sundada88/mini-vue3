@@ -388,9 +388,11 @@ export function createRenderer (options) {
       () => {
         //需要区分是不是第一次 init 还是后续更新 update
         if (!instance.isMounted) {
+          const { proxy } = instance
           // 因为把props属性，$slots属性，$el都挂载到了instance.proxy上面
           const subTree = (instance.subTree = instance.render.call(
-            instance.proxy
+            proxy,
+            proxy
           ))
 
           // subTree 是 vnode
@@ -407,8 +409,11 @@ export function createRenderer (options) {
             updateComponentPreRender(instance, next)
           }
           const prevVNode = instance.subTree
+          // instance.proxy
+          const { proxy } = instance
           const subTree = (instance.subTree = instance.render.call(
-            instance.proxy
+            proxy,
+            proxy
           ))
           // console.log('update ---> ', prevVNode, subTree)
           patch(prevVNode, subTree, container, instance, anchor)
