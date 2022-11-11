@@ -2,7 +2,7 @@ import { effect } from "../effect"
 import { reactive } from "../reactive"
 
 describe('test effect', () => {
-    it('happy path', () => {
+    it.only('happy path', () => {
         const obj = reactive({foo: 'foo'})
         const fn = jest.fn(() => {
             console.log(obj.foo)

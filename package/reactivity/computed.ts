@@ -7,7 +7,7 @@ export function computed(fn) {
         lazy: true,
         scheduler() {
             dirty = true
-            trigger(obj, 'value')
+            trigger(obj, null, 'value')
         }
     })
     const obj = {
@@ -16,7 +16,7 @@ export function computed(fn) {
                 val = computedFn()
                 dirty = false
             }  
-            track(obj, 'value')
+            track(obj, null, 'value')
             return val
         }
     }

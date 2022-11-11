@@ -1,8 +1,8 @@
 import { effect } from "../effect"
 import { readonly } from "../reactive"
 
-    describe('test readonly', () => {
-        it('test readonly', () => {
+    describe('test readonly', () => { 
+        it.only('test readonly', () => {
             const obj = readonly({foo: '1'})
             const fn = jest.fn(() => obj.foo)
             console.warn = jest.fn()

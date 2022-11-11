@@ -3,7 +3,7 @@ import { effect } from "../effect"
 import { reactive } from "../reactive"
 
 describe('test computed', () => {
-    it('computed should lazy', () => {
+    it.only('computed should lazy', () => {
         let dummy: any
         const obj = reactive({foo: 1})
         const fn = jest.fn(() => {

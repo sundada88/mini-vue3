@@ -1,8 +1,19 @@
 import { effect } from "../effect"
-import { reactive, readonly, shallowReactive } from "../reactive"
+import { isReactive, reactive, readonly, shallowReactive } from "../reactive"
 
 describe('test reactive', () => {
     it('origianl is not equal proxy', () => {
+        // const original = { foo: 1 }
+        // const observed = reactive(original)
+        // expect(observed).not.toBe(original)
+        // expect(isReactive(observed)).toBe(true)
+        // expect(isReactive(original)).toBe(false)
+        // // get
+        // expect(observed.foo).toBe(1)
+        // // has
+        // expect('foo' in observed).toBe(true)
+        // // ownKeys
+        // expect(Object.keys(observed)).toEqual(['foo'])
         const data = {foo: 1}
         const obj = reactive(data)
         expect(data).not.toBe(obj)
@@ -142,14 +153,14 @@ describe('test reactive', () => {
         arr[0] = 'bar'
         expect(fn).toHaveBeenCalled()
     })
-    it('arry length', () => {
+    it.skip('arry length', () => {
         const arr = reactive(['foo'])
         const fn = jest.fn(() => arr.length)
         effect(fn)
         arr[1] = 'bar'
         expect(fn).toHaveBeenCalledTimes(2)
     })
-    it('修改数组length属性，也会影响数组元素', () => {
+    it.skip('修改数组length属性，也会影响数组元素', () => {
         const arr = reactive(['foo'])
         const fn = jest.fn(() => arr[0])
         effect(fn)
@@ -158,7 +169,7 @@ describe('test reactive', () => {
         arr.length = 0
         expect(fn).toHaveBeenCalledTimes(2)
     })
-    it('使用for...in遍历数组', () => {
+    it.skip('使用for...in遍历数组', () => {
         // 影响数组遍历的几种
         //    1. 添加新元素: arr[100] = 'bar'
         //    2. 修改数组长度: arr.length = 0
@@ -174,7 +185,7 @@ describe('test reactive', () => {
         arr.length = 0
         expect(fn).toHaveBeenCalledTimes(3)
     })
-    it('使用for...of遍历数组', () => {
+    it.skip('使用for...of遍历数组', () => {
         const arr = reactive(['foo'])
         const fn = jest.fn(() => {
             for (const value of arr) {
@@ -187,7 +198,7 @@ describe('test reactive', () => {
         arr.length = 0
         expect(fn).toHaveBeenCalledTimes(3)
     })
-    describe('数组的方法', () => {
+    describe.skip('数组的方法', () => {
         describe('includes', () => {
             it('includes', () => {
                 const arr = reactive(['foo', 'bar'])
@@ -218,4 +229,14 @@ describe('test reactive', () => {
             })
         })
     })
+    // describe('proxy set and map', () => {
+    //     test('代理set', () => {
+    //         const p = reactive(new Set([1, 2, 3]))
+    //         const fn = jest.fn(() => p.size)
+    //         effect(fn)
+    //         expect(fn).toHaveBeenCalledTimes(1)
+    //         p.add(1)
+    //         expect(fn).toHaveBeenCalledTimes(2)
+    //     })
+    // })
 })
